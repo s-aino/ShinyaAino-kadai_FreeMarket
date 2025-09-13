@@ -1,0 +1,10 @@
+docker/mysql/data/
+docker/mysql/logs/
+vendor/
+node_modules/
+.env
+storage/*.key
+storage/logs/*
+storage/framework/*
+!/storage/logs/.gitignore
+!/storage/framework/.gitignore
