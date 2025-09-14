@@ -1,0 +1,100 @@
+
+erDiagram
+  users ||--o{ items : sells
+  users ||--o{ orders : places
+  users ||--o{ addresses : has
+  users ||--o{ comments : writes
+  items ||--o{ item_images : has
+  items ||--o{ order_items : included_in
+  items ||--o{ comments : receives
+  users ||--o{ favorites : likes
+  items ||--o{ favorites : liked_by
+  categories ||--o{ items : categorizes
+
+  users {
+    bigint id PK
+    string name
+    string email "UNIQUE"
+    string password
+    string avatar_path
+    datetime created_at
+    datetime updated_at
+  }
+  items {
+    bigint id PK
+    bigint user_id FK
+    bigint category_id FK
+    string title
+    string brand
+    string description
+    unsignedInteger price
+    tinyint condition "0..4"
+    tinyint status "0=draft,1=public,2=sold"
+    datetime created_at
+    datetime updated_at
+    datetime deleted_at
+  }
+  item_images {
+    bigint id PK
+    bigint item_id FK
+    string path
+    boolean is_primary
+    tinyint sort_order
+    datetime created_at
+    datetime updated_at
+  }
+  categories {
+    bigint id PK
+    string name
+    bigint parent_id
+    datetime created_at
+    datetime updated_at
+  }
+  favorites {
+    bigint id PK
+    bigint user_id FK "unique with item_id"
+    bigint item_id FK "unique with user_id"
+    datetime created_at
+    datetime updated_at
+  }
+  comments {
+    bigint id PK
+    bigint user_id FK
+    bigint item_id FK
+    text body
+    datetime created_at
+    datetime updated_at
+  }
+  orders {
+    bigint id PK
+    bigint user_id FK
+    bigint shipping_address_id FK
+    unsignedInteger total_amount
+    tinyint status "0=pending,1=paid,2=shipped,3=done,9=cancel"
+    datetime paid_at
+    datetime created_at
+    datetime updated_at
+  }
+  order_items {
+    bigint id PK
+    bigint order_id FK
+    bigint item_id FK
+    unsignedInteger price
+    unsignedSmallInteger quantity
+    datetime created_at
+    datetime updated_at
+  }
+  addresses {
+    bigint id PK
+    bigint user_id FK
+    string postal_code
+    string prefecture
+    string city
+    string address1
+    string address2
+    string phone
+    boolean is_default
+    datetime created_at
+    datetime updated_at
+  }
+
