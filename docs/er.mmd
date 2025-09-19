@@ -1,100 +1,101 @@
-
 erDiagram
-  users ||--o{ items : sells
-  users ||--o{ orders : places
-  users ||--o{ addresses : has
-  users ||--o{ comments : writes
-  items ||--o{ item_images : has
-  items ||--o{ order_items : included_in
-  items ||--o{ comments : receives
-  users ||--o{ favorites : likes
-  items ||--o{ favorites : liked_by
-  categories ||--o{ items : categorizes
+  USERS ||--|| PROFILES : "1:1 (user_id UNIQUE)"
+  USERS ||--o{ ADDRESSES : hasMany
+  USERS ||--o{ ITEMS : hasMany
+  USERS ||--o{ COMMENTS : hasMany
+  USERS }o--o{ ITEMS : "favorites"
 
-  users {
+  ITEMS ||--o{ ITEM_IMAGES : hasMany
+  ITEMS ||--o{ COMMENTS : hasMany
+  CATEGORIES ||--o{ ITEMS : hasMany
+  CATEGORIES ||--o{ CATEGORIES : "children (parent_id)"
+
+  ORDERS }o--|| USERS : "buyer_id"
+  ORDERS }o--|| ADDRESSES : "ship to"
+  ORDERS ||--o{ ORDER_ITEMS : hasMany
+  ORDER_ITEMS }o--|| ITEMS : belongsTo
+
+  USERS {
+    bigint   id PK
+    string   name
+    string   email        "UNIQUE"
+    string   password
+    string   avatar_path  "nullable"
+    timestamp email_verified_at "nullable"
+  }
+
+  PROFILES {
+    bigint id PK
+    bigint user_id FK  "UNIQUE(1:1)"
+    string display_name "nullable"
+    string bio          "nullable"
+    string website_url  "nullable"
+    date   birthdate    "nullable"
+  }
+
+  CATEGORIES {
     bigint id PK
     string name
-    string email "UNIQUE"
-    string password
-    string avatar_path
-    datetime created_at
-    datetime updated_at
+    string slug "UNIQUE"
+    bigint parent_id FK "nullable"
   }
-  items {
+
+  ITEMS {
     bigint id PK
     bigint user_id FK
     bigint category_id FK
     string title
-    string brand
-    string description
-    unsignedInteger price
-    tinyint condition "0..4"
-    tinyint status "0=draft,1=public,2=sold"
-    datetime created_at
-    datetime updated_at
-    datetime deleted_at
+    text   description
+    int    price
+    string status        "active|sold|paused"
+    tinyint condition    "nullable"
+    timestamp published_at "nullable"
   }
-  item_images {
+
+  ITEM_IMAGES {
     bigint id PK
     bigint item_id FK
     string path
-    boolean is_primary
-    tinyint sort_order
-    datetime created_at
-    datetime updated_at
+    smallint sort_order
   }
-  categories {
-    bigint id PK
-    string name
-    bigint parent_id
-    datetime created_at
-    datetime updated_at
-  }
-  favorites {
-    bigint id PK
-    bigint user_id FK "unique with item_id"
-    bigint item_id FK "unique with user_id"
-    datetime created_at
-    datetime updated_at
-  }
-  comments {
-    bigint id PK
+
+  FAVORITES {
     bigint user_id FK
     bigint item_id FK
-    text body
-    datetime created_at
-    datetime updated_at
   }
-  orders {
+
+  ORDERS {
     bigint id PK
-    bigint user_id FK
-    bigint shipping_address_id FK
-    unsignedInteger total_amount
-    tinyint status "0=pending,1=paid,2=shipped,3=done,9=cancel"
-    datetime paid_at
-    datetime created_at
-    datetime updated_at
+    bigint buyer_id FK
+    bigint address_id FK
+    int    total_amount
+    string status        "pending|paid|canceled|refunded"
+    timestamp ordered_at
   }
-  order_items {
+
+  ORDER_ITEMS {
     bigint id PK
     bigint order_id FK
     bigint item_id FK
-    unsignedInteger price
-    unsignedSmallInteger quantity
-    datetime created_at
-    datetime updated_at
-  }
-  addresses {
-    bigint id PK
-    bigint user_id FK
-    string postal_code
-    string prefecture
-    string city
-    string address1
-    string address2
-    string phone
-    boolean is_default
-    datetime created_at
-    datetime updated_at
+    int    price
+    int    qty
   }
 
+  ADDRESSES {
+    bigint id PK
+    bigint user_id FK
+    string postal
+    string prefecture
+    string city
+    string line1
+    string line2  "nullable"
+    string phone  "nullable"
+    boolean is_default
+  }
+
+  COMMENTS {
+    bigint id PK
+    bigint user_id FK
+    bigint item_id FK
+    string body
+  }
