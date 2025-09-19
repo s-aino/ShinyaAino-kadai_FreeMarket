@@ -18,7 +18,7 @@
         <input name="password_confirmation" type="password" placeholder="パスワード（確認）" required>
         <button type="submit">登録</button>
     </form>
-    <p><a href="/login">ログインへ</a> / <a href="/">トップへ</a></p>
+    <p style="margin-top:16px"><a href="/login">ログインへ</a> / <a href="/">トップへ</a></p>
 </body>
 
 </html>
