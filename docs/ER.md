@@ -1,105 +1,91 @@
 # ER 図
 
 ```mermaid
-
 erDiagram
-  USERS ||--|| PROFILES : "1:1 (user_id UNIQUE)"
-  USERS ||--o{ ADDRESSES : hasMany
-  USERS ||--o{ ITEMS : hasMany
-  USERS ||--o{ COMMENTS : hasMany
-  USERS }o--o{ ITEMS : "favorites"
-
-  ITEMS ||--o{ ITEM_IMAGES : hasMany
-  ITEMS ||--o{ COMMENTS : hasMany
-  CATEGORIES ||--o{ ITEMS : hasMany
-  CATEGORIES ||--o{ CATEGORIES : "children (parent_id)"
-
-  ORDERS }o--|| USERS : "buyer_id"
-  ORDERS }o--|| ADDRESSES : "ship to"
-  ORDERS ||--o{ ORDER_ITEMS : hasMany
-  ORDER_ITEMS }o--|| ITEMS : belongsTo
+  %% Notes:
+  %% - UNIQUE: USERS.email, CATEGORIES.slug
+  %% - ITEMS.image_path はサムネ1枚
+  %% - status の値: active|sold / pending|paid|canceled など想定
 
   USERS {
     bigint   id PK
     string   name
-    string   email        "UNIQUE"
+    string   email
     string   password
-    string   avatar_path  "nullable"
-    timestamp email_verified_at "nullable"
-  }
-
-  PROFILES {
-    bigint id PK
-    bigint user_id FK  "UNIQUE(1:1)"
-    string display_name "nullable"
-    string bio          "nullable"
-    string website_url  "nullable"
-    date   birthdate    "nullable"
+    datetime email_verified_at
+    string   remember_token
+    datetime created_at
+    datetime updated_at
   }
 
   CATEGORIES {
-    bigint id PK
-    string name
-    string slug "UNIQUE"
-    bigint parent_id FK "nullable"
+    bigint   id PK
+    string   name
+    string   slug
+    datetime created_at
+    datetime updated_at
   }
 
   ITEMS {
-    bigint id PK
-    bigint user_id FK
-    bigint category_id FK
-    string title
-    text   description
-    int    price
-    string status        "active|sold|paused"
-    tinyint condition    "nullable"
-    timestamp published_at "nullable"
-  }
-
-  ITEM_IMAGES {
-    bigint id PK
-    bigint item_id FK
-    string path
-    smallint sort_order
-  }
-
-  FAVORITES {
-    bigint user_id FK
-    bigint item_id FK
-  }
-
-  ORDERS {
-    bigint id PK
-    bigint buyer_id FK
-    bigint address_id FK
-    int    total_amount
-    string status        "pending|paid|canceled|refunded"
-    timestamp ordered_at
-  }
-
-  ORDER_ITEMS {
-    bigint id PK
-    bigint order_id FK
-    bigint item_id FK
-    int    price
-    int    qty
+    bigint   id PK
+    bigint   user_id FK
+    bigint   category_id FK
+    string   title
+    text     description
+    int      price
+    string   status
+    string   image_path
+    datetime created_at
+    datetime updated_at
   }
 
   ADDRESSES {
-    bigint id PK
-    bigint user_id FK
-    string postal
-    string prefecture
-    string city
-    string line1
-    string line2  "nullable"
-    string phone  "nullable"
-    boolean is_default
+    bigint   id PK
+    bigint   user_id FK
+    string   postal
+    string   prefecture
+    string   city
+    string   line1
+    string   line2
+    string   phone
+    boolean  is_default
+    datetime created_at
+    datetime updated_at
+  }
+
+  ORDERS {
+    bigint   id PK
+    bigint   buyer_id FK
+    bigint   item_id FK
+    bigint   address_id FK
+    int      price
+    int      qty
+    string   status
+    datetime ordered_at
+    datetime created_at
+    datetime updated_at
   }
 
   COMMENTS {
-    bigint id PK
-    bigint user_id FK
-    bigint item_id FK
-    string body
+    bigint   id PK
+    bigint   user_id FK
+    bigint   item_id FK
+    string   body
+    datetime created_at
+    datetime updated_at
   }
+
+  %% Relations
+  USERS      ||--o{ ITEMS     : hasMany
+  USERS      ||--o{ ADDRESSES : hasMany
+  USERS      ||--o{ COMMENTS  : hasMany
+  CATEGORIES ||--o{ ITEMS     : hasMany
+
+  ITEMS      }o--|| USERS      : belongsTo
+  ITEMS      }o--|| CATEGORIES : belongsTo
+  COMMENTS   }o--|| USERS      : belongsTo
+  COMMENTS   }o--|| ITEMS      : belongsTo
+
+  ORDERS     }o--|| USERS      : buyer_id
+  ORDERS     }o--|| ITEMS      : item_id
+  ORDERS     }o--|| ADDRESSES  : ship_to

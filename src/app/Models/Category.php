@@ -2,29 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'parent_id'];
+    // 6テーブル案は階層なし。親子をやらないので parent_id は持たない
+    protected $fillable = ['name', 'slug'];
 
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(Item::class);
-    }
+    public function items() { return $this->hasMany(Item::class); }
 }

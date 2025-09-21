@@ -2,32 +2,40 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'category_id', 'title', 'price', 'description'];
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'title',
+        'description',
+        'price',
+        'status',
+        'image_path',
+    ];
     protected $casts = [
-        'price' => 'integer',   // DBがINT想定。DECIMALなら 'decimal:2' 等に
+        'price' => 'integer',
     ];
 
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);        // 外部キーが seller_id なら第2引数で 'seller_id'
+        return $this->belongsTo(User::class);
     }
-
-    public function category(): BelongsTo
+    public function category()
     {
-        return $this->belongsTo(Category::class);    // 外部キー名が違うなら同様に指定
+        return $this->belongsTo(Category::class);
     }
-
-    public function images(): HasMany
+    public function comments()
     {
-        return $this->hasMany(ItemImage::class);     // item_images.item_id を前提
+        return $this->hasMany(Comment::class);
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    } // 購入履歴参照用
 }

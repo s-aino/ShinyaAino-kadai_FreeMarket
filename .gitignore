@@ -9,3 +9,5 @@ storage/framework/*
 !/storage/logs/.gitignore
 !/storage/framework/.gitignore
 docs/wireframes/**
+# Ignore PsySH history
+src/.config/
