@@ -1,24 +1,74 @@
-<!doctype html>
-<html lang="ja">
+{{-- resources/views/auth/register.blade.php --}}
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <title>新規登録</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+@section('title', '会員登録')
 
-<body style="font-family:system-ui,'Noto Sans JP',sans-serif;margin:24px">
-    <h1>新規登録</h1>
-    @if ($errors->any()) <ul>@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul> @endif
-    <form method="POST" action="{{ route('register') }}" style="max-width:420px;margin:auto;display:grid;gap:12px">
-        @csrf
-        <input name="name" type="text" placeholder="お名前" required>
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="password" type="password" placeholder="パスワード" required>
-        <input name="password_confirmation" type="password" placeholder="パスワード（確認）" required>
-        <button type="submit">登録</button>
-    </form>
-    <p style="margin-top:16px"><a href="/login">ログインへ</a> / <a href="/">トップへ</a></p>
-</body>
+@section('content')
+<h1>会員登録</h1>
 
-</html>
+{{-- まとめてのエラー表示（ページ上部） --}}
+@if ($errors->any())
+<ul>
+    @foreach ($errors->all() as $e)
+    <li>{{ $e }}</li>
+    @endforeach
+</ul>
+@endif
+
+<form method="POST" action="{{ url('/register') }}" novalidate>
+    @csrf
+
+    <div>
+        <label for="name">ユーザー名</label>
+        <input
+            id="name"
+            type="text"
+            name="name"
+            value="{{ old('name') }}"
+            maxlength="20"
+            autocomplete="name"
+            autocapitalize="off"
+            autocorrect="off"
+            inputmode="text"
+            required>
+        @error('name') <p>{{ $message }}</p> @enderror
+    </div>
+
+    <div>
+        <label for="email">メールアドレス</label>
+        <input
+            id="email"
+            type="email"
+            name="email"
+            value="{{ old('email') }}"
+            autocomplete="email"
+            required>
+        @error('email') <p>{{ $message }}</p> @enderror
+    </div>
+
+    <div>
+        <label for="password">パスワード</label>
+        <input
+            id="password"
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            required>
+        @error('password') <p>{{ $message }}</p> @enderror
+    </div>
+
+    <div>
+        <label for="password_confirmation">確認用パスワード</label>
+        <input
+            id="password_confirmation"
+            type="password"
+            name="password_confirmation"
+            autocomplete="new-password"
+            required>
+    </div>
+
+    <button type="submit">登録する</button>
+</form>
+
+<p><a href="{{ url('/login') }}">ログインはこちら</a></p>
+@endsection

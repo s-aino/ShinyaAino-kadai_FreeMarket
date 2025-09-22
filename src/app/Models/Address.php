@@ -11,14 +11,7 @@ class Address extends Model
 
     // 仕様：postal/prefecture/city/line1/line2/phone/is_default
     protected $fillable = [
-        'user_id',
-        'postal',
-        'prefecture',
-        'city',
-        'line1',
-        'line2',
-        'phone',
-        'is_default',
+ 'user_id','postal_code','prefecture','city','address_line1','address_line2','phone',
     ];
     protected $casts = [
         'is_default' => 'boolean',

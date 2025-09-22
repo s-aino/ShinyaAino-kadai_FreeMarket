@@ -27,6 +27,6 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::loginView(fn() => view('auth.login'));
         Fortify::registerView(fn() => view('auth.register'));
-        Fortify::createUsersUsing(\App\Actions\Fortify\CreateNewUser::class);
+        Fortify::createUsersUsing(CreateNewUser::class);
     }
 }
