@@ -5,6 +5,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\ProfileSetupController;
 
 // ===== Fortify（ログイン/ログアウト） =====
 Route::view('/', 'welcome');
@@ -14,6 +15,8 @@ Route::view('/', 'welcome');
 Route::middleware('auth')->group(function () {
     Route::get('/sell',  [ItemController::class, 'create'])->name('items.create'); // 画面
     Route::post('/sell', [ItemController::class, 'store'])->name('items.store');   // 登録
+    Route::get('/setup',  [ProfileSetupController::class, 'edit'])->name('setup.edit');
+    Route::put('/setup',  [ProfileSetupController::class, 'update'])->name('setup.update');
 });
 
 // ===== 購入フロー =====
